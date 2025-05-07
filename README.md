@@ -24,6 +24,7 @@ cd Examdb08
 nano .env
 ```
 # CONTENIDO DEL ARCHIVO .ENV
+```bash
 MYSQL_ROOT_PASSWORD=rootpass
 MYSQL_DATABASE=examen_db
 MYSQL_USER=admin
@@ -36,7 +37,7 @@ DB_NAME=examen_db
 DB_USER=admin
 DB_PASSWORD=adminpass
 PORT=8000
-
+```
 
 ## 3. Ejecutar Docker Compose
 ```bash
