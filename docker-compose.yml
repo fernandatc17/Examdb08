@@ -6,10 +6,10 @@ services:
     container_name: mysql_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: examen_db
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: adminpass
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
@@ -21,13 +21,8 @@ services:
     restart: always
     ports:
       - "8000:8000"
-    environment:
-      DB_HOST: db
-      DB_USER: admin
-      DB_PASSWORD: adminpass
-      DB_NAME: examen_db
-      DB_PORT: 3306
-      PORT: 8000
+    env_file:
+      - .env
     depends_on:
       - db
 
@@ -42,3 +37,6 @@ services:
 
 volumes:
   mysql_data:
+
+
+

@@ -1,51 +1,59 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import API from '../api';
 
 function Productos() {
   const [productos, setProductos] = useState([]);
-  const [nuevo, setNuevo] = useState({ nombre: '', descripcion: '', precio: '' });
+  const [productosOriginal, setProductosOriginal] = useState([]);
+  const [filtro, setFiltro] = useState('');
 
   const listar = async () => {
     const res = await API.get('/productos');
     setProductos(res.data);
-  };
-
-  const crear = async (e) => {
-    e.preventDefault();
-    await API.post('/productos', nuevo);
-    listar();
+    setProductosOriginal(res.data);
   };
 
   useEffect(() => { listar(); }, []);
 
+  const filtrar = (texto) => {
+    const filtrados = productosOriginal.filter(p =>
+      p.nombre.toLowerCase().includes(texto.toLowerCase())
+    );
+    setProductos(filtrados);
+    setFiltro(texto);
+  };
+
   return (
     <div className="container mt-5">
-      <div className="card p-4 shadow mb-4">
-        <h2 className="mb-4">Registrar Producto</h2>
-        <form onSubmit={crear}>
-          <div className="mb-3">
-            <input className="form-control" placeholder="Nombre" onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })} />
-          </div>
-          <div className="mb-3">
-            <input className="form-control" placeholder="Descripción" onChange={e => setNuevo({ ...nuevo, descripcion: e.target.value })} />
-          </div>
-          <div className="mb-3">
-            <input type="number" className="form-control" placeholder="Precio" onChange={e => setNuevo({ ...nuevo, precio: parseFloat(e.target.value) })} />
-          </div>
-          <button className="btn btn-success w-100">Crear Producto</button>
-        </form>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2>Productos</h2>
+        <Link to="/crear-producto" className="btn btn-success">Crear Producto</Link>
       </div>
-
-      <div className="card p-4 shadow">
-        <h3>Lista de Productos</h3>
-        <ul className="list-group mt-3">
+      <input
+        type="text"
+        className="form-control mb-3"
+        placeholder="Buscar producto por nombre"
+        value={filtro}
+        onChange={(e) => filtrar(e.target.value)}
+      />
+      <table className="table table-bordered">
+        <thead className="table-dark">
+          <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+          </tr>
+        </thead>
+        <tbody>
           {productos.map(p => (
-            <li key={p.id} className="list-group-item">
-              {p.nombre} - S/ {p.precio}
-            </li>
+            <tr key={p.id}>
+              <td>{p.nombre}</td>
+              <td>{p.descripcion}</td>
+              <td>S/ {p.precio}</td>
+            </tr>
           ))}
-        </ul>
-      </div>
+        </tbody>
+      </table>
     </div>
   );
 }
